@@ -19,19 +19,44 @@ class CarModel {
     required this.automatic,
   });
 
+  /// ---- 🔥 FIXED JSON MAPPING HERE ---- ///
   factory CarModel.fromJson(Map<String, dynamic> json) {
     return CarModel(
       id: _toInt(json['id']),
-      name: json['name']?.toString() ?? "",
-      brand: json['brand']?.toString() ?? "",
-      modelYear: _toInt(json['model_year']),
-      pricePerDay: _toDouble(json['price_per_day']),
-      cityId: _toInt(json['city_id']),
-      imageUrl: json['image_url']?.toString() ?? "",
-      automatic: json['automatic'] == true,
+      name: json['name'] ?? '',
+      brand: json['brand'] ?? '',
+      
+      /// Support both: model_year & modelYear
+      modelYear: _toInt(json['model_year'] ?? json['modelYear']),
+      
+      /// Support both: price_per_day & pricePerDay
+      pricePerDay: _toDouble(json['price_per_day'] ?? json['pricePerDay']),
+      
+      /// Support both: city_id & cityId
+      cityId: _toInt(json['city_id'] ?? json['cityId']),
+      
+      /// Support both: image_url & imageUrl
+      imageUrl: json['image_url'] ?? json['imageUrl'] ?? '',
+      
+      /// Support: 0/1 or true/false
+      automatic: json['automatic'] == 1 || json['automatic'] == true,
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'brand': brand,
+      'modelYear': modelYear,
+      'pricePerDay': pricePerDay,
+      'cityId': cityId,
+      'imageUrl': imageUrl,
+      'automatic': automatic,
+    };
+  }
+
+  /// ---- SAFE PARSERS ---- ///
   static int _toInt(dynamic v) {
     if (v == null) return 0;
     if (v is int) return v;
