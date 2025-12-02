@@ -4,8 +4,7 @@ import 'screens/home_screen.dart';
 void main() {
   runApp(const RentalApp());
 }
-//Fixed Comments added for the rewntal 
-//test fromserver
+
 class RentalApp extends StatelessWidget {
   const RentalApp({super.key});
 
