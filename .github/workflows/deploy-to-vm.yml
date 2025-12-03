@@ -20,6 +20,8 @@ jobs:
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         passphrase: ""
+        use_insecure_cipher: true
+        cipher: aes256-cbc
         script: |
           cd /home/${{ secrets.VM_USER }}/rental_app
           git pull
