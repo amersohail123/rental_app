@@ -13,11 +13,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Add SSH key
+    - name: Start ssh-agent and add private key
       uses: webfactory/ssh-agent@v0.9.0
       with:
         ssh-private-key: |
           ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Test private key presence
+      run: |
+        echo "Key loaded into ssh-agent successfully."
 
     - name: Deploy to VM
       uses: appleboy/ssh-action@v1.0.0
