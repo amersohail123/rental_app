@@ -36,3 +36,4 @@ jobs:
           npm install
           pm2 restart all || pm2 start server.js
           echo "Deployment completed."
+
