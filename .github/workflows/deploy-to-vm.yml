@@ -19,6 +19,7 @@ jobs:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ""
         script: |
           cd /home/${{ secrets.VM_USER }}/rental_app
           git pull
