@@ -13,15 +13,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: SSH and deploy to VM
+    - name: Add SSH key
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: |
+          ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to VM
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        passphrase: ""
-        use_insecure_cipher: true
-        cipher: aes256-cbc
+        port: 22
         script: |
           cd /home/${{ secrets.VM_USER }}/rental_app
           git pull
