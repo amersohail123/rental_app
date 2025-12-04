@@ -65,30 +65,28 @@ class CarDetailsScreen extends StatelessWidget {
     );
   }
 
-  // ---------------------------------------------------------
-  // FIXED: imageUrl is ALWAYS non-null in CarModel
-  // ---------------------------------------------------------
+  // ---------------- CAR IMAGE ----------------
   Widget _buildCarImage() {
-    return SizedBox(
-      height: 230,
-      width: double.infinity,
-      child: (car.imageUrl.isNotEmpty)
-          ? Image.network(
-              car.imageUrl,
-              fit: BoxFit.cover,
-            )
-          : Container(
-              color: Colors.grey[300],
-              child: const Center(
-                child: Icon(Icons.car_rental, size: 120, color: Colors.grey),
-              ),
-            ),
-    );
+    if (car.imageUrl.isNotEmpty) {
+      return SizedBox(
+        height: 230,
+        width: double.infinity,
+        child: Image.network(
+          car.imageUrl,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      return Container(
+        height: 230,
+        width: double.infinity,
+        color: Colors.grey[300],
+        child: const Icon(Icons.car_rental, size: 120, color: Colors.grey),
+      );
+    }
   }
 
-  // ---------------------------------------------------------
-  // Car Information Card
-  // ---------------------------------------------------------
+  // ---------------- INFO CARD ----------------
   Widget _buildCarInfoCard() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -124,7 +122,7 @@ class CarDetailsScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             Text(
-              "${car.pricePerDay.toStringAsFixed(0)} SAR / day",
+              "${car.pricePerDay.toStringAsFixed(2)} SAR / day",
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -137,9 +135,7 @@ class CarDetailsScreen extends StatelessWidget {
     );
   }
 
-  // ---------------------------------------------------------
-  // Car Features Row
-  // ---------------------------------------------------------
+  // ---------------- FEATURES ROW ----------------
   Widget _buildFeaturesRow() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
