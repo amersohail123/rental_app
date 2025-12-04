@@ -2,35 +2,31 @@ name: Deploy to VM
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout Code
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # 2️⃣ Load SSH Key into SSH Agent
-      - name: Load SSH Key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Start ssh-agent and add private key
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.VM_KEY }}
 
-      # 3️⃣ Actual Deployment to Your VM
-      - name: Deploy to VM
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /home/oursystemapps/rental_app
-            git pull
-            npm install
-            pm2 restart all || pm2 start server.js
-            echo "Deployment completed successfully."
+    - name: Deploy to VM
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.VM_PORT }}
+        script: |
+          cd /home/oursystemapps/rental_app
+          git pull
+          npm install
+          pm2 restart all || pm2 start server.js
+          echo "Deployment completed."
