@@ -1,4 +1,4 @@
-name: Deploy to Google VM
+name: Deploy to VM
 
 on:
   push:
@@ -10,30 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # 1️⃣ Checkout Code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Start ssh-agent and add private key
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: |
-          ${{ secrets.SSH_PRIVATE_KEY }}
+      # 2️⃣ Load SSH Key into SSH Agent
+      - name: Load SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Test private key presence
-      run: |
-        echo "Key loaded into ssh-agent successfully."
-
-    - name: Deploy to VM
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        script: |
-          cd /home/${{ secrets.VM_USER }}/rental_app
-          git pull
-          npm install
-          pm2 restart all || pm2 start server.js
-          echo "Deployment completed."
-
+      # 3️⃣ Actual Deployment to Your VM
+      - name: Deploy to VM
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /home/oursystemapps/rental_app
+            git pull
+            npm install
+            pm2 restart all || pm2 start server.js
+            echo "Deployment completed successfully."
