@@ -21,16 +21,12 @@ class _CityScreenState extends State<CityScreen> {
   }
 
   Future<void> loadCities() async {
-    try {
-      final response = await ApiService.getCities();
-      setState(() {
-        cities = response;
-        isLoading = false;
-      });
-    } catch (e) {
-      print("Error loading cities: $e");
-      setState(() => isLoading = false);
-    }
+    var response = await ApiService.getCities();
+
+    /// 🔥 IMPORTANT: Convert JSON → City Model
+    cities = response.map<City>((json) => City.fromJson(json)).toList();
+
+    setState(() => isLoading = false);
   }
 
   @override
@@ -42,11 +38,9 @@ class _CityScreenState extends State<CityScreen> {
           : ListView.builder(
               itemCount: cities.length,
               itemBuilder: (context, index) {
-                final city = cities[index];
-
+                final city = cities[index];   // City object
                 return Card(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 8),
+                  margin: const EdgeInsets.all(12),
                   child: ListTile(
                     title: Text(city.name),
                     trailing: const Icon(Icons.chevron_right),
