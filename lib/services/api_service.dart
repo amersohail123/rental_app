@@ -1,44 +1,56 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../models/city.dart';
-import '../models/car_model.dart';
-
 class ApiService {
   // Cloud Run backend URL
   static const String baseUrl =
       "https://rental-api-98679704122.us-central1.run.app";
 
-  // -------------------------------------------------------------
-  // GET ALL CITIES → returns List<City>
-  // -------------------------------------------------------------
-  static Future<List<City>> getCities() async {
+  // ============================================================
+  // GET ALL CITIES
+  // ============================================================
+  static Future<List<dynamic>> getCities() async {
     final url = Uri.parse("$baseUrl/cities");
+
+    print("➡️ Fetching Cities: $url");
+
     final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final List data = jsonDecode(response.body);
+    print("⬅️ Cities Response: ${response.statusCode}");
+    print("Cities Raw Body: ${response.body}");
 
-      return data.map((item) => City.fromJson(item)).toList();
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
     } else {
-      print("Error loading cities: ${response.body}");
       throw Exception("Failed to load cities");
     }
   }
 
-  // -------------------------------------------------------------
-  // GET CARS BY CITY → returns List<CarModel>
-  // -------------------------------------------------------------
-  static Future<List<CarModel>> getCarsByCity(int cityId) async {
+  // ============================================================
+  // GET CARS BY CITY ID
+  // ============================================================
+  static Future<List<dynamic>> getCarsByCity(int cityId) async {
     final url = Uri.parse("$baseUrl/cars?city_id=$cityId");
+
+    print("➡️ Fetching Cars: $url");
+
     final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final List data = jsonDecode(response.body);
+    print("⬅️ Cars Response: ${response.statusCode}");
+    print("RAW CARS RESPONSE: ${response.body}");
 
-      return data.map((item) => CarModel.fromJson(item)).toList();
+    if (response.statusCode == 200) {
+      try {
+        var decoded = jsonDecode(response.body);
+
+        print("Decoded JSON Type: ${decoded.runtimeType}");
+        return decoded;
+      } catch (e) {
+        print("❌ JSON Decode Error: $e");
+        throw Exception("Invalid JSON from backend");
+      }
     } else {
-      print("Error loading cars: ${response.body}");
+      print("❌ Cars API Error: ${response.body}");
       throw Exception("Failed to load cars");
     }
   }
