@@ -15,7 +15,7 @@ jobs:
     - name: Start ssh-agent and add private key
       uses: webfactory/ssh-agent@v0.9.0
       with:
-        ssh-private-key: ${{ secrets.VM_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Deploy to VM
       uses: appleboy/ssh-action@v1.0.0
