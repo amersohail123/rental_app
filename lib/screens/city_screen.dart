@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
-import '../models/car_model.dart';
+import '../models/city.dart';
 import 'cars_screen.dart';
 
 class CityScreen extends StatefulWidget {
@@ -11,7 +11,7 @@ class CityScreen extends StatefulWidget {
 }
 
 class _CityScreenState extends State<CityScreen> {
-  List cities = [];
+  List<City> cities = [];
   bool isLoading = true;
 
   @override
@@ -21,11 +21,16 @@ class _CityScreenState extends State<CityScreen> {
   }
 
   Future<void> loadCities() async {
-    var response = await ApiService.getCities();
-    setState(() {
-      cities = response;
-      isLoading = false;
-    });
+    try {
+      final response = await ApiService.getCities();
+      setState(() {
+        cities = response;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error loading cities: $e");
+      setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -37,17 +42,19 @@ class _CityScreenState extends State<CityScreen> {
           : ListView.builder(
               itemCount: cities.length,
               itemBuilder: (context, index) {
-                var city = cities[index];
+                final city = cities[index];
+
                 return Card(
-                  margin: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
                   child: ListTile(
-                    title: Text(city["name"]),
+                    title: Text(city.name),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CarsScreen(cityId: city["id"]),
+                          builder: (_) => CarsScreen(cityId: city.id),
                         ),
                       );
                     },
