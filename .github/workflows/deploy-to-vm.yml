@@ -21,10 +21,10 @@ jobs:
     - name: Add VM to known_hosts
       run: ssh-keyscan -H 35.194.1.2 >> ~/.ssh/known_hosts
 
-    - name: Test SSH Connection
-      run: ssh -o StrictHostKeyChecking=no oursystemapps@35.194.1.2 "echo Connected OK"
+    - name: Test SSH
+      run: ssh -o StrictHostKeyChecking=no oursystemapps@35.194.1.2 "echo CONNECTED OK"
 
-    - name: Sync Flutter code
+    - name: Deploy code
       run: |
         ssh -o StrictHostKeyChecking=no oursystemapps@35.194.1.2 "
           cd /home/oursystemapps/rental_app &&
