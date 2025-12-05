@@ -1,4 +1,4 @@
-name: Deploy Frontend Only
+name: Deploy Frontend & Build Flutter
 
 on:
   push:
@@ -21,13 +21,22 @@ jobs:
     - name: Add VM to known_hosts
       run: ssh-keyscan -H 35.194.1.2 >> ~/.ssh/known_hosts
 
-    - name: Test SSH
-      run: ssh -o StrictHostKeyChecking=no oursystemapps@35.194.1.2 "echo CONNECTED OK"
-
-    - name: Deploy code
+    - name: Deploy to VM
       run: |
         ssh -o StrictHostKeyChecking=no oursystemapps@35.194.1.2 "
           cd /home/oursystemapps/rental_app &&
           git pull &&
-          echo 'Frontend updated at $(date)'
+          echo 'Code pulled at $(date)' &&
+          
+          # --- Build Flutter Web ---
+          flutter clean &&
+          flutter pub get &&
+          flutter build web --release &&
+          
+          # --- Deploy to web root ---
+          sudo rm -rf /var/www/html/* &&
+          sudo cp -r build/web/* /var/www/html/ &&
+          
+          sudo systemctl restart nginx || true &&
+          echo 'Deployment completed at $(date)'
         "
