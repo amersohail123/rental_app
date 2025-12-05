@@ -19,64 +19,23 @@ class CarModel {
     required this.automatic,
   });
 
-  // ----------------------------------------
-  // JSON PARSER (SAFE FOR BACKEND FORMAT)
-  // ----------------------------------------
+  // -----------------------------
+  // JSON FACTORY
+  // -----------------------------
   factory CarModel.fromJson(Map<String, dynamic> json) {
+    // Debug print to console
+    print("🔥 Car JSON -> $json");
+
     return CarModel(
       id: _toInt(json['id']),
       name: json['name'] ?? '',
       brand: json['brand'] ?? '',
 
-      // Support both: model_year & modelYear
+      // Support BOTH: model_year & modelYear
       modelYear: _toInt(json['model_year'] ?? json['modelYear']),
 
-      // Support both: price_per_day & pricePerDay, and string numbers
+      // Support BOTH: price_per_day & pricePerDay
       pricePerDay: _toDouble(json['price_per_day'] ?? json['pricePerDay']),
 
       // Support both: city_id & cityId
-      cityId: _toInt(json['city_id'] ?? json['cityId']),
-
-      // Support both: image_url & imageUrl
-      imageUrl: (json['image_url'] ?? json['imageUrl'] ?? '').toString(),
-
-      // Support: 0/1 or true/false
-      automatic: json['automatic'] == 1 || json['automatic'] == true,
-    );
-  }
-
-  // ----------------------------------------
-  // PRESERVE FOR SENDING BACK TO SERVER
-  // ----------------------------------------
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'brand': brand,
-      'modelYear': modelYear,
-      'pricePerDay': pricePerDay,
-      'cityId': cityId,
-      'imageUrl': imageUrl,
-      'automatic': automatic,
-    };
-  }
-
-  // ----------------------------------------
-  // SAFE PARSERS
-  // ----------------------------------------
-  static int _toInt(dynamic v) {
-    if (v == null) return 0;
-    if (v is int) return v;
-    if (v is double) return v.toInt();
-    if (v is String) return int.tryParse(v) ?? 0;
-    return 0;
-  }
-
-  static double _toDouble(dynamic v) {
-    if (v == null) return 0.0;
-    if (v is double) return v;
-    if (v is int) return v.toDouble();
-    if (v is String) return double.tryParse(v) ?? 0.0;
-    return 0.0;
-  }
-}
+      cityId: _toInt(json['cit]()_
