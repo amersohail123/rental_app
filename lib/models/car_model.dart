@@ -19,25 +19,35 @@ class CarModel {
     required this.automatic,
   });
 
-  /// -----------------------------
-  /// FACTORY FROM JSON (SAFE)
-  /// -----------------------------
+  // ----------------------------------------
+  // JSON PARSER (SAFE FOR BACKEND FORMAT)
+  // ----------------------------------------
   factory CarModel.fromJson(Map<String, dynamic> json) {
     return CarModel(
       id: _toInt(json['id']),
       name: json['name'] ?? '',
       brand: json['brand'] ?? '',
+
+      // Support both: model_year & modelYear
       modelYear: _toInt(json['model_year'] ?? json['modelYear']),
-      pricePerDay: _safeDouble(json['price_per_day'] ?? json['pricePerDay']),
+
+      // Support both: price_per_day & pricePerDay, and string numbers
+      pricePerDay: _toDouble(json['price_per_day'] ?? json['pricePerDay']),
+
+      // Support both: city_id & cityId
       cityId: _toInt(json['city_id'] ?? json['cityId']),
-      imageUrl: json['image_url'] ?? json['imageUrl'] ?? '',
+
+      // Support both: image_url & imageUrl
+      imageUrl: (json['image_url'] ?? json['imageUrl'] ?? '').toString(),
+
+      // Support: 0/1 or true/false
       automatic: json['automatic'] == 1 || json['automatic'] == true,
     );
   }
 
-  /// -----------------------------
-  /// JSON EXPORT
-  /// -----------------------------
+  // ----------------------------------------
+  // PRESERVE FOR SENDING BACK TO SERVER
+  // ----------------------------------------
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -51,10 +61,9 @@ class CarModel {
     };
   }
 
-  /// -----------------------------
-  /// SAFE PARSERS
-  /// -----------------------------
-
+  // ----------------------------------------
+  // SAFE PARSERS
+  // ----------------------------------------
   static int _toInt(dynamic v) {
     if (v == null) return 0;
     if (v is int) return v;
@@ -63,14 +72,11 @@ class CarModel {
     return 0;
   }
 
-  static double _safeDouble(dynamic v) {
+  static double _toDouble(dynamic v) {
     if (v == null) return 0.0;
     if (v is double) return v;
     if (v is int) return v.toDouble();
-    if (v is String) {
-      // Remove commas like "45,000.00"
-      return double.tryParse(v.replaceAll(",", "")) ?? 0.0;
-    }
+    if (v is String) return double.tryParse(v) ?? 0.0;
     return 0.0;
   }
 }
