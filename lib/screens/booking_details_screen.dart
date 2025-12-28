@@ -24,7 +24,8 @@ class BookingDetailsScreen extends StatelessWidget {
       if (totalDays < 1) totalDays = 1;
     }
 
-    double pricePerDay = (car['price_per_day'] ?? 0).toDouble();
+    // ✅ SAFE conversion: handles 45, 45.0, "45", "45.00"
+    double pricePerDay = _safeDouble(car['price_per_day']);
     double totalPrice = totalDays * pricePerDay;
 
     return Scaffold(
@@ -32,7 +33,6 @@ class BookingDetailsScreen extends StatelessWidget {
         title: const Text("Booking Details"),
         backgroundColor: Colors.blue,
       ),
-
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,15 +54,20 @@ class BookingDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  Text(car["name"],
-                      style: const TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.bold)),
-
-                  Text("${car['brand']} • ${car['model_year']}",
-                      style:
-                          TextStyle(fontSize: 16, color: Colors.grey.shade600)),
-
+                  Text(
+                    car["name"],
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "${car['brand']} • ${car['model_year']}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
                   const SizedBox(height: 20),
 
                   Row(
@@ -78,10 +83,11 @@ class BookingDetailsScreen extends StatelessWidget {
 
                   const SizedBox(height: 25),
 
-                  const Text("Booking Summary",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
+                  const Text(
+                    "Booking Summary",
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 10),
 
                   _summary("Pickup Date",
@@ -100,8 +106,12 @@ class BookingDetailsScreen extends StatelessWidget {
 
                   const SizedBox(height: 5),
 
-                  _summary("TOTAL PRICE", "$totalPrice SAR",
-                      bold: true, color: Colors.blue),
+                  _summary(
+                    "TOTAL PRICE",
+                    "$totalPrice SAR",
+                    bold: true,
+                    color: Colors.blue,
+                  ),
 
                   const SizedBox(height: 25),
 
@@ -110,18 +120,22 @@ class BookingDetailsScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Step-3 coming soon")),
+                          const SnackBar(
+                            content: Text("Step-3 coming soon"),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: const EdgeInsets.all(14),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                       child: const Text(
                         "Continue",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
                   ),
@@ -144,8 +158,12 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _summary(String label, String value,
-      {bool bold = false, Color? color}) {
+  Widget _summary(
+    String label,
+    String value, {
+    bool bold = false,
+    Color? color,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -163,4 +181,13 @@ class BookingDetailsScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+// ✅ Helper to safely convert any dynamic value to double
+double _safeDouble(dynamic value) {
+  if (value == null) return 0.0;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  if (value is String) return double.tryParse(value) ?? 0.0;
+  return 0.0;
 }
