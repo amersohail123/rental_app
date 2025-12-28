@@ -24,9 +24,9 @@ class BookingDetailsScreen extends StatelessWidget {
       if (totalDays < 1) totalDays = 1;
     }
 
-    // ✅ SAFE conversion: handles 45, 45.0, "45", "45.00"
-    double pricePerDay = _safeDouble(car['price_per_day']);
-    double totalPrice = totalDays * pricePerDay;
+    // ✅ SAFE conversion: works for 45, 45.0, "45", "45.00"
+    final double pricePerDay = _safeDouble(car['price_per_day']);
+    final double totalPrice = totalDays * pricePerDay;
 
     return Scaffold(
       appBar: AppBar(
@@ -55,19 +55,21 @@ class BookingDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    car["name"],
+                    car["name"] ?? '',
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   Text(
-                    "${car['brand']} • ${car['model_year']}",
+                    "${car['brand'] ?? ''} • ${car['model_year'] ?? ''}",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey.shade600,
                     ),
                   ),
+
                   const SizedBox(height: 20),
 
                   Row(
@@ -75,8 +77,10 @@ class BookingDetailsScreen extends StatelessWidget {
                     children: [
                       _spec(Icons.people, "4 Seats"),
                       _spec(Icons.luggage, "2 Bags"),
-                      _spec(Icons.settings,
-                          car['automatic'] == true ? "Automatic" : "Manual"),
+                      _spec(
+                        Icons.settings,
+                        car['automatic'] == true ? "Automatic" : "Manual",
+                      ),
                       _spec(Icons.ac_unit, "AC"),
                     ],
                   ),
@@ -88,16 +92,25 @@ class BookingDetailsScreen extends StatelessWidget {
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
+
                   const SizedBox(height: 10),
 
-                  _summary("Pickup Date",
-                      pickupDate?.toString().split(" ")[0] ?? "-"),
                   _summary(
-                      "Pickup Time", pickupTime?.format(context) ?? "-"),
-                  _summary("Dropoff Date",
-                      dropoffDate?.toString().split(" ")[0] ?? "-"),
+                    "Pickup Date",
+                    pickupDate?.toString().split(" ")[0] ?? "-",
+                  ),
                   _summary(
-                      "Dropoff Time", dropoffTime?.format(context) ?? "-"),
+                    "Pickup Time",
+                    pickupTime?.format(context) ?? "-",
+                  ),
+                  _summary(
+                    "Dropoff Date",
+                    dropoffDate?.toString().split(" ")[0] ?? "-",
+                  ),
+                  _summary(
+                    "Dropoff Time",
+                    dropoffTime?.format(context) ?? "-",
+                  ),
 
                   const Divider(height: 30),
 
@@ -141,7 +154,7 @@ class BookingDetailsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -183,7 +196,7 @@ class BookingDetailsScreen extends StatelessWidget {
   }
 }
 
-// ✅ Helper to safely convert any dynamic value to double
+/// Helper to safely convert any dynamic value to double
 double _safeDouble(dynamic value) {
   if (value == null) return 0.0;
   if (value is double) return value;
