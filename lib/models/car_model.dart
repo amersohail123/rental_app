@@ -19,23 +19,56 @@ class CarModel {
     required this.automatic,
   });
 
-  // -----------------------------
-  // JSON FACTORY
-  // -----------------------------
   factory CarModel.fromJson(Map<String, dynamic> json) {
-    // Debug print to console
     print("🔥 Car JSON -> $json");
 
     return CarModel(
       id: _toInt(json['id']),
       name: json['name'] ?? '',
       brand: json['brand'] ?? '',
-
-      // Support BOTH: model_year & modelYear
       modelYear: _toInt(json['model_year'] ?? json['modelYear']),
-
-      // Support BOTH: price_per_day & pricePerDay
       pricePerDay: _toDouble(json['price_per_day'] ?? json['pricePerDay']),
+      cityId: _toInt(json['city_id'] ?? json['cityId']),
+      imageUrl: json['image_url'] ?? json['imageUrl'] ?? '',
+      automatic: _toBool(json['automatic']),
+    );
+  }
 
-      // Support both: city_id & cityId
-      cityId: _toInt(json['cit]()_
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'brand': brand,
+      'model_year': modelYear,
+      'price_per_day': pricePerDay,
+      'city_id': cityId,
+      'image_url': imageUrl,
+      'automatic': automatic,
+    };
+  }
+
+  static int _toInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
+  static double _toDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
+  static bool _toBool(dynamic value) {
+    if (value is bool) return value;
+    if (value is int) return value != 0;
+    if (value is String) {
+      return value.toLowerCase() == 'true' || value == '1';
+    }
+    return false;
+  }
+}
