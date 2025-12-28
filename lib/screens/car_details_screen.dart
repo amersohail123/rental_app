@@ -1,175 +1,114 @@
 import 'package:flutter/material.dart';
-import '../models/car_model.dart';
-import 'booking_screen.dart';
+import '../models/car.dart';
+import 'booking_screen.dart'; // Ensure this exists in your screens folder
 
 class CarDetailsScreen extends StatelessWidget {
-  final CarModel car;
+  final Car car;
 
   const CarDetailsScreen({super.key, required this.car});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text(car.name),
-        elevation: 0,
+        title: Text('${car.brand} ${car.name}'),
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [
-            _buildCarImage(),
-
-            const SizedBox(height: 12),
-
-            _buildCarInfoCard(),
-
-            const SizedBox(height: 12),
-
-            _buildFeaturesRow(),
-
-            const SizedBox(height: 20),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BookingScreen(car: car),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "Book Now",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 40),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ---------------- CAR IMAGE ----------------
-  Widget _buildCarImage() {
-    if (car.imageUrl.isNotEmpty) {
-      return SizedBox(
-        height: 230,
-        width: double.infinity,
-        child: Image.network(
-          car.imageUrl,
-          fit: BoxFit.cover,
-        ),
-      );
-    } else {
-      return Container(
-        height: 230,
-        width: double.infinity,
-        color: Colors.grey[300],
-        child: const Icon(Icons.car_rental, size: 120, color: Colors.grey),
-      );
-    }
-  }
-
-  // ---------------- INFO CARD ----------------
-  Widget _buildCarInfoCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 10,
-              spreadRadius: 2,
-              color: Colors.black12,
-            ),
-          ],
-        ),
-        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              car.name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            // Car Image Header
+            Container(
+              height: 250,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+              ),
+              child: car.imageUrl.isNotEmpty
+                  ? Image.network(
+                      car.imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.directions_car, size: 100),
+                    )
+                  : const Icon(Icons.directions_car, size: 100),
             ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              car.brand,
-              style: const TextStyle(fontSize: 18, color: Colors.black54),
-            ),
-
-            const SizedBox(height: 16),
-
-            Text(
-              "${car.pricePerDay.toStringAsFixed(2)} SAR / day",
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
+            
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title and Price
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.between,
+                    children: [
+                      Text(
+                        car.name,
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '\$${car.pricePerDay.toStringAsFixed(2)}/day',
+                        style: const TextStyle(
+                          fontSize: 20, 
+                          color: Colors.green, 
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Brand: ${car.brand}',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Car Specifications
+                  const Text(
+                    'Specifications',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.calendar_today),
+                    title: const Text('Model Year'),
+                    trailing: Text(car.modelYear),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.settings),
+                    title: const Text('Transmission'),
+                    trailing: Text(car.isAutomatic ? 'Automatic' : 'Manual'),
+                  ),
+                  
+                  const SizedBox(height: 30),
+                  
+                  // Booking Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingScreen(car: car),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Book Now', style: TextStyle(fontSize: 18)),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  // ---------------- FEATURES ROW ----------------
-  Widget _buildFeaturesRow() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 8,
-              color: Colors.black12,
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildFeature(Icons.calendar_today, "${car.modelYear}"),
-            _buildFeature(Icons.settings, car.automatic ? "Automatic" : "Manual"),
-            _buildFeature(Icons.location_on, "City ${car.cityId}"),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFeature(IconData icon, String label) {
-    return Column(
-      children: [
-        Icon(icon, size: 28, color: Colors.blue),
-        const SizedBox(height: 6),
-        Text(label, style: const TextStyle(fontSize: 14)),
-      ],
     );
   }
 }
