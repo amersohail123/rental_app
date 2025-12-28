@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/car.dart';
-import 'booking_screen.dart'; // Ensure this exists in your screens folder
+import '../models/car_model.dart'; // Step 2: Pointing to the unified model
+import 'booking_screen.dart';
 
 class CarDetailsScreen extends StatelessWidget {
-  final Car car;
+  final CarModel car; // Changed from 'Car' to 'CarModel'
 
   const CarDetailsScreen({super.key, required this.car});
 
@@ -11,7 +11,7 @@ class CarDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${car.brand} ${car.name}'),
+        title: Text('${car.brand} ${car.name}'), // Uses unified brand/name
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -21,9 +21,7 @@ class CarDetailsScreen extends StatelessWidget {
             Container(
               height: 250,
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-              ),
+              decoration: BoxDecoration(color: Colors.grey[200]),
               child: car.imageUrl.isNotEmpty
                   ? Image.network(
                       car.imageUrl,
@@ -39,7 +37,6 @@ class CarDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title and Price
                   Row(
                     mainAxisAlignment: MainAxisAlignment.between,
                     children: [
@@ -47,6 +44,7 @@ class CarDetailsScreen extends StatelessWidget {
                         car.name,
                         style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
+                      // Safe formatting for the price double
                       Text(
                         '\$${car.pricePerDay.toStringAsFixed(2)}/day',
                         style: const TextStyle(
@@ -64,7 +62,6 @@ class CarDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   
-                  // Car Specifications
                   const Text(
                     'Specifications',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -73,12 +70,13 @@ class CarDetailsScreen extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.calendar_today),
                     title: const Text('Model Year'),
-                    trailing: Text(car.modelYear),
+                    trailing: Text(car.modelYear.toString()), // Converting int to String
                   ),
                   ListTile(
                     leading: const Icon(Icons.settings),
                     title: const Text('Transmission'),
-                    trailing: Text(car.isAutomatic ? 'Automatic' : 'Manual'),
+                    // Matches the 'automatic' boolean in CarModel
+                    trailing: Text(car.automatic ? 'Automatic' : 'Manual'),
                   ),
                   
                   const SizedBox(height: 30),
