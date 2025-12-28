@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../models/car_model.dart'; // Import the unified model
 
 class BookingDetailsScreen extends StatelessWidget {
-  final dynamic car;
+  final CarModel car; // Changed from dynamic to CarModel
   final DateTime? pickupDate;
   final DateTime? dropoffDate;
   final TimeOfDay? pickupTime;
@@ -24,8 +25,8 @@ class BookingDetailsScreen extends StatelessWidget {
       if (totalDays < 1) totalDays = 1;
     }
 
-    // ✅ SAFE conversion: works for 45, 45.0, "45", "45.00"
-    final double pricePerDay = _safeDouble(car['price_per_day']);
+    // Now uses the clean double directly from the model
+    final double pricePerDay = car.pricePerDay;
     final double totalPrice = totalDays * pricePerDay;
 
     return Scaffold(
@@ -37,13 +38,13 @@ class BookingDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // IMAGE
+            // Car Image Header
             Container(
               height: 220,
               width: double.infinity,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(car['image_url'] ?? ""),
+                  image: NetworkImage(car.imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -55,7 +56,7 @@ class BookingDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    car["name"] ?? '',
+                    car.name,
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -63,7 +64,7 @@ class BookingDetailsScreen extends StatelessWidget {
                   ),
 
                   Text(
-                    "${car['brand'] ?? ''} • ${car['model_year'] ?? ''}",
+                    "${car.brand} • ${car.modelYear}",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey.shade600,
@@ -79,7 +80,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       _spec(Icons.luggage, "2 Bags"),
                       _spec(
                         Icons.settings,
-                        car['automatic'] == true ? "Automatic" : "Manual",
+                        car.automatic ? "Automatic" : "Manual", // Field name from unified model
                       ),
                       _spec(Icons.ac_unit, "AC"),
                     ],
@@ -89,39 +90,26 @@ class BookingDetailsScreen extends StatelessWidget {
 
                   const Text(
                     "Booking Summary",
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 10),
 
-                  _summary(
-                    "Pickup Date",
-                    pickupDate?.toString().split(" ")[0] ?? "-",
-                  ),
-                  _summary(
-                    "Pickup Time",
-                    pickupTime?.format(context) ?? "-",
-                  ),
-                  _summary(
-                    "Dropoff Date",
-                    dropoffDate?.toString().split(" ")[0] ?? "-",
-                  ),
-                  _summary(
-                    "Dropoff Time",
-                    dropoffTime?.format(context) ?? "-",
-                  ),
+                  _summary("Pickup Date", pickupDate?.toString().split(" ")[0] ?? "-"),
+                  _summary("Pickup Time", pickupTime?.format(context) ?? "-"),
+                  _summary("Dropoff Date", dropoffDate?.toString().split(" ")[0] ?? "-"),
+                  _summary("Dropoff Time", dropoffTime?.format(context) ?? "-"),
 
                   const Divider(height: 30),
 
                   _summary("Total Days", "$totalDays Days"),
-                  _summary("Price per Day", "$pricePerDay SAR"),
+                  _summary("Price per Day", "${pricePerDay.toStringAsFixed(2)} SAR"),
 
                   const SizedBox(height: 5),
 
                   _summary(
                     "TOTAL PRICE",
-                    "$totalPrice SAR",
+                    "${totalPrice.toStringAsFixed(2)} SAR",
                     bold: true,
                     color: Colors.blue,
                   ),
@@ -133,9 +121,7 @@ class BookingDetailsScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Step-3 coming soon"),
-                          ),
+                          const SnackBar(content: Text("Booking confirmed successfully!")),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -146,9 +132,8 @@ class BookingDetailsScreen extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        "Continue",
-                        style:
-                            TextStyle(fontSize: 18, color: Colors.white),
+                        "Confirm Reservation",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
                   ),
@@ -171,12 +156,7 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _summary(
-    String label,
-    String value, {
-    bool bold = false,
-    Color? color,
-  }) {
+  Widget _summary(String label, String value, {bool bold = false, Color? color}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -194,13 +174,4 @@ class BookingDetailsScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Helper to safely convert any dynamic value to double
-double _safeDouble(dynamic value) {
-  if (value == null) return 0.0;
-  if (value is double) return value;
-  if (value is int) return value.toDouble();
-  if (value is String) return double.tryParse(value) ?? 0.0;
-  return 0.0;
 }
