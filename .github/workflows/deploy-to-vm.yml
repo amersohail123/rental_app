@@ -19,7 +19,7 @@ jobs:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Add VM to known_hosts
-      run: ssh-keyscan -H 35.194.1.2 >> ~/.ssh/known_hosts
+      run: ssh-keyscan -H 35.192.96.116 >> ~/.ssh/known_hosts
 
     - name: Deploy to VM
       run: |
