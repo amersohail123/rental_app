@@ -28,7 +28,7 @@ jobs:
           git pull &&
           echo 'Code pulled at $(date)' &&
           
-          # --- Build Flutter Web28dec20251211 ---
+          # --- Build Flutter Web28dec2025121 ---
           flutter clean &&
           flutter pub get &&
           flutter build web --release &&
