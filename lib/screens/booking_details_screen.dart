@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/car_model.dart';
-// test
+import '../models/car.dart';
+
 class BookingDetailsScreen extends StatelessWidget {
-  final CarModel car;
+  final Car car;
   final DateTime? pickupDate;
   final DateTime? dropoffDate;
   final TimeOfDay? pickupTime;
@@ -25,7 +25,7 @@ class BookingDetailsScreen extends StatelessWidget {
       if (totalDays < 1) totalDays = 1;
     }
 
-    // car is now a CarModel, we can use its fields directly
+    // car is a Car model, already has a double pricePerDay
     final double pricePerDay = car.pricePerDay;
     final double totalPrice = totalDays * pricePerDay;
 
@@ -80,7 +80,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       _spec(Icons.luggage, "2 Bags"),
                       _spec(
                         Icons.settings,
-                        car.automatic ? "Automatic" : "Manual",
+                        car.isAutomatic ? "Automatic" : "Manual",
                       ),
                       _spec(Icons.ac_unit, "AC"),
                     ],
@@ -90,8 +90,10 @@ class BookingDetailsScreen extends StatelessWidget {
 
                   const Text(
                     "Booking Summary",
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
 
                   const SizedBox(height: 10),
@@ -116,7 +118,10 @@ class BookingDetailsScreen extends StatelessWidget {
                   const Divider(height: 30),
 
                   _summary("Total Days", "$totalDays Days"),
-                  _summary("Price per Day", "${pricePerDay.toStringAsFixed(2)} SAR"),
+                  _summary(
+                    "Price per Day",
+                    "${pricePerDay.toStringAsFixed(2)} SAR",
+                  ),
 
                   const SizedBox(height: 5),
 
@@ -148,8 +153,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       ),
                       child: const Text(
                         "Continue",
-                        style:
-                            TextStyle(fontSize: 18, color: Colors.white),
+                        style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
                   ),
