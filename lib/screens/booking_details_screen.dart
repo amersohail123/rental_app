@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/car_model.dart'; // Import the unified model
+import '../models/car_model.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
-  final CarModel car; // Changed from dynamic to CarModel
+  final CarModel car;
   final DateTime? pickupDate;
   final DateTime? dropoffDate;
   final TimeOfDay? pickupTime;
@@ -25,7 +25,7 @@ class BookingDetailsScreen extends StatelessWidget {
       if (totalDays < 1) totalDays = 1;
     }
 
-    // Now uses the clean double directly from the model
+    // car is now a CarModel, we can use its fields directly
     final double pricePerDay = car.pricePerDay;
     final double totalPrice = totalDays * pricePerDay;
 
@@ -38,7 +38,7 @@ class BookingDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Car Image Header
+            // IMAGE
             Container(
               height: 220,
               width: double.infinity,
@@ -80,7 +80,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       _spec(Icons.luggage, "2 Bags"),
                       _spec(
                         Icons.settings,
-                        car.automatic ? "Automatic" : "Manual", // Field name from unified model
+                        car.automatic ? "Automatic" : "Manual",
                       ),
                       _spec(Icons.ac_unit, "AC"),
                     ],
@@ -90,15 +90,28 @@ class BookingDetailsScreen extends StatelessWidget {
 
                   const Text(
                     "Booking Summary",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 10),
 
-                  _summary("Pickup Date", pickupDate?.toString().split(" ")[0] ?? "-"),
-                  _summary("Pickup Time", pickupTime?.format(context) ?? "-"),
-                  _summary("Dropoff Date", dropoffDate?.toString().split(" ")[0] ?? "-"),
-                  _summary("Dropoff Time", dropoffTime?.format(context) ?? "-"),
+                  _summary(
+                    "Pickup Date",
+                    pickupDate?.toString().split(" ")[0] ?? "-",
+                  ),
+                  _summary(
+                    "Pickup Time",
+                    pickupTime?.format(context) ?? "-",
+                  ),
+                  _summary(
+                    "Dropoff Date",
+                    dropoffDate?.toString().split(" ")[0] ?? "-",
+                  ),
+                  _summary(
+                    "Dropoff Time",
+                    dropoffTime?.format(context) ?? "-",
+                  ),
 
                   const Divider(height: 30),
 
@@ -121,7 +134,9 @@ class BookingDetailsScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Booking confirmed successfully!")),
+                          const SnackBar(
+                            content: Text("Step-3 coming soon"),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -132,8 +147,9 @@ class BookingDetailsScreen extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        "Confirm Reservation",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        "Continue",
+                        style:
+                            TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
                   ),
@@ -156,7 +172,12 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _summary(String label, String value, {bool bold = false, Color? color}) {
+  Widget _summary(
+    String label,
+    String value, {
+    bool bold = false,
+    Color? color,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
