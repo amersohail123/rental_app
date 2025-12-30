@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/car.dart';
+import '../models/car_model.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
-  final Car car;
+  final CarModel car;
   final DateTime? pickupDate;
   final DateTime? dropoffDate;
   final TimeOfDay? pickupTime;
@@ -25,7 +25,7 @@ class BookingDetailsScreen extends StatelessWidget {
       if (totalDays < 1) totalDays = 1;
     }
 
-    // car is a Car model, already has a double pricePerDay
+    // car is a CarModel, values are already parsed safely
     final double pricePerDay = car.pricePerDay;
     final double totalPrice = totalDays * pricePerDay;
 
@@ -80,7 +80,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       _spec(Icons.luggage, "2 Bags"),
                       _spec(
                         Icons.settings,
-                        car.isAutomatic ? "Automatic" : "Manual",
+                        car.automatic ? "Automatic" : "Manual",
                       ),
                       _spec(Icons.ac_unit, "AC"),
                     ],
